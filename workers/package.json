@@ -1,0 +1,26 @@
+{
+  "name": "bocalc-workers",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Workers backend for BOCalc",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "esbuild src/index.ts --bundle --outfile=dist/worker.js --format=esm",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "hono": "^3.12.8",
+    "jose": "^5.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240117.0",
+    "@types/bcryptjs": "^2.4.6",
+    "esbuild": "^0.19.11",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.3",
+    "wrangler": "^3.24.0"
+  }
+}

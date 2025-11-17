@@ -1,0 +1,53 @@
+# Cloudflare Workers Configuration for BOCalc
+
+name = "bocalc-api"
+main = "workers/src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Account: zaaatakyrylo@gmail.com
+account_id = "YOUR_ACCOUNT_ID" # Replace with actual account ID after setup
+
+[env.production]
+name = "bocalc-api"
+vars = { ENVIRONMENT = "production" }
+
+[env.staging]
+name = "bocalc-api-staging"
+vars = { ENVIRONMENT = "staging" }
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "bocalc-db"
+database_id = "YOUR_DATABASE_ID" # Will be set after db creation
+
+# KV Namespace for caching
+[[kv_namespaces]]
+binding = "CACHE"
+id = "YOUR_KV_ID" # Will be set after KV creation
+
+# Cron Triggers for Google Sheets sync
+[triggers]
+crons = [
+  "*/5 * * * *"  # Every 5 minutes - sync Google Sheets
+]
+
+# Build configuration (disabled for local dev)
+# [build]
+# command = "npm run build"
+# cwd = "workers"
+
+# Observability
+[observability]
+enabled = true
+
+# Limits
+[limits]
+cpu_ms = 50
+
+# Environment variables (use wrangler secret put for sensitive data)
+# Example:
+# wrangler secret put GOOGLE_SERVICE_ACCOUNT_KEY
+# wrangler secret put JWT_SECRET
+
+

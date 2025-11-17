@@ -1,0 +1,25 @@
+# Cloudflare Workers Configuration for BOCalc API
+
+name = "bocalc-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Account
+account_id = "0afce6d1f5be6971a0d1f10f0441fe31"
+
+# D1 Database (production)
+[[d1_databases]]
+binding = "DB"
+database_name = "bocalc-db"
+database_id = "133dc7d2-b6a1-414c-9902-7077fb763753"
+
+# KV Namespace (production)
+[[kv_namespaces]]
+binding = "CACHE"
+id = "30179e20950e4b1b96a9f53e926c2ed5"
+
+# Observability
+[observability]
+enabled = true
+
