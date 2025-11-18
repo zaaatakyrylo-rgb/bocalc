@@ -5,7 +5,6 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -27,11 +26,17 @@ const nextConfig = {
       allowedOrigins: ['localhost:3000', 'bocalc.pages.dev'],
     },
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.externals.push({
       'utf-8-validate': 'commonjs utf-8-validate',
       'bufferutil': 'commonjs bufferutil',
     });
+    
+    // Отключаем filesystem cache для Cloudflare Pages
+    if (process.env.CF_PAGES) {
+      config.cache = false;
+    }
+    
     return config;
   },
 };
