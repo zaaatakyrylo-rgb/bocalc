@@ -1,11 +1,10 @@
-import { Suspense } from 'react';
 'use client';
 
+import { Suspense } from 'react';
 import { useTranslations } from 'next-intl';
 import { VendorRatesManager } from '@/components/dashboard/vendor-rates-manager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export const revalidate = 0;
 
 export default function VendorRatesPage() {
   const t = useTranslations();

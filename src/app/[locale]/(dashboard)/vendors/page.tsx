@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { VendorManager } from '@/components/dashboard/vendor-manager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export const revalidate = 0;
 
 export default function VendorsPage() {
   const t = useTranslations();

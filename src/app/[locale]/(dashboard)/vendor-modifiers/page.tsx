@@ -1,11 +1,10 @@
-import { Suspense } from 'react';
 'use client';
 
+import { Suspense } from 'react';
 import { useTranslations } from 'next-intl';
 import { VendorModifiersManager } from '@/components/dashboard/vendor-modifiers-manager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export const revalidate = 0;
 
 export default function VendorModifiersPage() {
   const t = useTranslations();

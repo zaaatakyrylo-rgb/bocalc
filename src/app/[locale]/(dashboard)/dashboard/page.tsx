@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-export const revalidate = 0;
 
 export default function DashboardPage() {
   const t = useTranslations();

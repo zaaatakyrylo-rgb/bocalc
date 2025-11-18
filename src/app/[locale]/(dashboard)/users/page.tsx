@@ -1,11 +1,10 @@
-import { Suspense } from 'react';
 'use client';
 
+import { Suspense } from 'react';
 import { useTranslations } from 'next-intl';
 import { UsersManager } from '@/components/dashboard/users-manager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export const revalidate = 0;
 
 export default function UsersPage() {
   const t = useTranslations();
