@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOCalc - Car Shipping Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    BOCalc
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Car Shipping Calculator from USA
+                </p>
+            </div>
+            <form onsubmit="event.preventDefault(); login();" class="mt-8 space-y-6">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="email" class="sr-only">Email</label>
+                        <input id="email" name="email" type="email" required autocomplete="email"
+                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+                               placeholder="Email">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" required autocomplete="current-password"
+                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+                               placeholder="Password">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Sign in
+                    </button>
+                </div>
+
+                <div id="error" class="hidden text-red-600 text-sm text-center"></div>
+                <div id="success" class="hidden text-green-600 text-sm text-center"></div>
+            </form>
+
+            <div class="text-center text-sm text-gray-600">
+                <p>Default credentials:</p>
+                <p class="font-mono">zaaatakyrylo@gmail.com / Admin123!</p>
+            </div>
+
+            <div class="text-center text-xs text-gray-500">
+                <p>Backend API: <a href="https://bocalc-api.zaaatakyrylo.workers.dev/api/vendors" 
+                   class="text-indigo-600 hover:text-indigo-500" target="_blank">Test API</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://bocalc-api.zaaatakyrylo.workers.dev';
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Save the access token
+                    const accessToken = data.data.tokens.accessToken;
+                    localStorage.setItem('auth-token', accessToken);
+                    console.log('Token saved:', accessToken.substring(0, 20) + '...');
+                    
+                    successDiv.textContent = 'Login successful! Redirecting...';
+                    successDiv.classList.remove('hidden');
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 500);
+                } else {
+                    errorDiv.textContent = data.error?.message || 'Login failed';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error: ' + error.message;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // Form submit is now handled by the form element
+    </script>
+</body>
+</html>
+

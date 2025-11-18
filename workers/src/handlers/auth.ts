@@ -18,7 +18,9 @@ export const authRouter = new Hono<{ Bindings: Env }>();
  */
 authRouter.post('/login', async (c) => {
   try {
+    console.log('Login attempt started');
     const { email, password } = await c.req.json();
+    console.log('Email:', email);
 
     // Validate input
     if (!email || !password) {
@@ -59,7 +61,10 @@ authRouter.post('/login', async (c) => {
     }
 
     // Verify password
+    console.log('Verifying password for user:', email);
+    console.log('Stored hash:', user.password_hash);
     const isValid = await verifyPassword(password, user.password_hash);
+    console.log('Password valid:', isValid);
     if (!isValid) {
       return c.json({
         success: false,
@@ -140,11 +145,13 @@ authRouter.post('/login', async (c) => {
     });
   } catch (error: any) {
     console.error('Login error:', error);
+    console.error('Error stack:', error.stack);
     return c.json({
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: 'Login failed',
+        message: error.message || 'Login failed',
+        details: error.toString(),
       },
     }, 500);
   }
