@@ -8,11 +8,14 @@ class ApiClient {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl =
-      process.env.NEXT_PUBLIC_API_URL || 
-      (typeof window !== 'undefined' && window.location.hostname === 'localhost'
-        ? 'http://localhost:8787'
-        : 'https://bocalc-api.zaaatakyrylo.workers.dev');
+    // Check if we're in browser and on localhost
+    const isLocalhost = typeof window !== 'undefined' && 
+                       (window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1');
+    
+    this.baseUrl = isLocalhost
+      ? 'http://localhost:8787'
+      : 'https://bocalc-api.zaaatakyrylo.workers.dev';
   }
 
   /**
