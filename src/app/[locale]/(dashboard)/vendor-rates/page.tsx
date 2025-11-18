@@ -1,4 +1,3 @@
-export const dynamic = "force-static";
 'use client';
 
 import { Suspense } from 'react';
