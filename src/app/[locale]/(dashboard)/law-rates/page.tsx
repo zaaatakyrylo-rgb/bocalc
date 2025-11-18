@@ -1,3 +1,5 @@
+'use client';
+
 import { LawRatesManager } from '@/components/dashboard/law-rates-manager';
 
 export default function LawRatesPage() {
