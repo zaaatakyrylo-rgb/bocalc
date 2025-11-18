@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Loader2, Plus, Edit3, XCircle, History } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/i18n-provider';
 import { apiClient } from '@/lib/api-client';
 import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/hooks/useAuth';

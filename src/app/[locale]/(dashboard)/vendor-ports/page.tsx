@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/i18n-provider';
 import { VendorPortsManager } from '@/components/dashboard/vendor-ports-manager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 

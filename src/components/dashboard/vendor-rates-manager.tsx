@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Loader2, History, Trash2, Edit3 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/i18n-provider';
 import { VendorRate, VersionRecord } from '@/types';
 import { apiClient } from '@/lib/api-client';
 import { useToast } from '@/hooks/useToast';

@@ -1,3 +1,4 @@
+// Static export configuration for Cloudflare Pages
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
@@ -34,4 +35,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+module.exports = nextConfig;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/lib/i18n-provider';
 import { VendorDetailsPage } from '@/components/dashboard/vendor-details-page';
 
 interface VendorDetailPageProps {
