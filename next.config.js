@@ -4,6 +4,8 @@ const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  distDir: 'out',
   reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: true,
@@ -20,11 +22,6 @@ const nextConfig = {
         hostname: '**.cloudflare.com',
       },
     ],
-  },
-  experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000', 'bocalc.pages.dev'],
-    },
   },
   webpack: (config, { isServer }) => {
     config.externals.push({
