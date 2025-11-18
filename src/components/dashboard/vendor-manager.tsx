@@ -24,7 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { VendorDetailsPage } from './vendor-details-page';
 
 interface VendorView
   extends Omit<Vendor, 'createdAt' | 'updatedAt'> {
@@ -78,6 +80,7 @@ export function VendorManager() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingVendorId, setEditingVendorId] = useState<string | null>(null);
   const [form, setForm] = useState<VendorFormState>(emptyFormState());
+  const [detailsVendorId, setDetailsVendorId] = useState<string | null>(null);
   const vendorScope = user?.vendorId || null;
 
   const canCreateVendor = isAdmin;
@@ -430,8 +433,7 @@ export function VendorManager() {
                             type="button"
                             size="sm"
                             variant="secondary"
-                            disabled
-                            title="Vendor details view coming soon"
+                            onClick={() => setDetailsVendorId(vendor.id)}
                           >
                             <Eye className="mr-1.5 h-4 w-4" />
                             {t('vendors.viewDetails')}
@@ -688,7 +690,7 @@ export function VendorManager() {
                   {t('vendors.resetForm')}
                 </Button>
               )}
-              <Button type="submit" disabled={isSubmitting}>
+      <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
@@ -699,6 +701,24 @@ export function VendorManager() {
         </CardContent>
       </Card>
     </div>
+
+    <Dialog
+      open={Boolean(detailsVendorId)}
+      onOpenChange={(open) => {
+        if (!open) {
+          setDetailsVendorId(null);
+        }
+      }}
+    >
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        {detailsVendorId && (
+          <VendorDetailsPage
+            vendorId={detailsVendorId}
+            onClose={() => setDetailsVendorId(null)}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
 

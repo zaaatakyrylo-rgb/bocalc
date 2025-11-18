@@ -19,9 +19,10 @@ import { useRouter } from 'next/navigation';
 
 interface VendorDetailsPageProps {
   vendorId: string;
+  onClose?: () => void;
 }
 
-export function VendorDetailsPage({ vendorId }: VendorDetailsPageProps) {
+export function VendorDetailsPage({ vendorId, onClose }: VendorDetailsPageProps) {
   const t = useTranslations('vendors');
   const locale = useLocale();
   const { toast } = useToast();
@@ -62,7 +63,11 @@ export function VendorDetailsPage({ vendorId }: VendorDetailsPageProps) {
           title: t('error'),
           description: t('vendorNotFound'),
         });
-        router.push(`/${locale}/vendors`);
+        if (onClose) {
+          onClose();
+        } else {
+          router.push(`/${locale}/vendors`);
+        }
       }
     } catch (error) {
       console.error('Failed to load vendor:', error);
@@ -139,16 +144,24 @@ export function VendorDetailsPage({ vendorId }: VendorDetailsPageProps) {
     return null;
   }
 
+  const handleBack = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      router.push(`/${locale}/vendors`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => router.push(`/${locale}/vendors`)}
+          onClick={handleBack}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          {t('backToList')}
+          {onClose ? t('common.close') : t('backToList')}
         </Button>
       </div>
 
