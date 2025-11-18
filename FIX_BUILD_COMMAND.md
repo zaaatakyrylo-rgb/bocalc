@@ -30,7 +30,14 @@ npx @cloudflare/next-on-pages@1
 
 **Измените:**
 
-**Build command** (было `npx @cloudflare/next-on-pages@1`)
+**Build command:**
+
+БЫЛО (старое, неправильное):
+```
+npx @cloudflare/next-on-pages@1
+```
+
+ДОЛЖНО БЫТЬ (новое, правильное):
 ```
 npm run build
 ```
