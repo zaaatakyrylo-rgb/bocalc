@@ -1,4 +1,6 @@
-import { getTranslations } from 'next-intl/server';
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { VendorDetailsPage } from '@/components/dashboard/vendor-details-page';
 
 interface VendorDetailPageProps {
@@ -8,8 +10,8 @@ interface VendorDetailPageProps {
   };
 }
 
-export default async function VendorDetailPage({ params }: VendorDetailPageProps) {
-  const t = await getTranslations('vendors');
+export default function VendorDetailPage({ params }: VendorDetailPageProps) {
+  const t = useTranslations('vendors');
 
   return (
     <div className="space-y-6">
