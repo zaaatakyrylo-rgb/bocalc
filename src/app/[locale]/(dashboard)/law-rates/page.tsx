@@ -1,3 +1,4 @@
+export const dynamic = "force-static";
 'use client';
 
 import { LawRatesManager } from '@/components/dashboard/law-rates-manager';
