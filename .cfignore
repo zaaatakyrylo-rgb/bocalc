@@ -1,0 +1,14 @@
+# Cloudflare Pages ignore file
+
+# Next.js cache files
+.next/cache/
+
+# Webpack cache
+cache/
+
+# Build caches
+.next/cache/webpack/
+
+# Other large cache files
+*.pack
+
