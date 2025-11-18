@@ -21,20 +21,23 @@ export function generateStaticParams() {
   ];
 }
 
-export default async function LocaleLayout({
+// Synchronously import messages for static export
+function getMessages(locale: string) {
+  try {
+    return require(`@/messages/${locale}.json`);
+  } catch (error) {
+    return require(`@/messages/en.json`);
+  }
+}
+
+export default function LocaleLayout({
   children,
   params: { locale },
 }: {
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  // Import messages directly for static export
-  let messages;
-  try {
-    messages = (await import(`@/messages/${locale}.json`)).default;
-  } catch (error) {
-    messages = (await import(`@/messages/en.json`)).default;
-  }
+  const messages = getMessages(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -46,5 +49,3 @@ export default async function LocaleLayout({
     </html>
   );
 }
-
-
