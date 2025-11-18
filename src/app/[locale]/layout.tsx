@@ -1,4 +1,4 @@
-import { NextIntlClientProvider } from 'next-intl';
+import { I18nProvider } from '@/lib/i18n-provider';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import '../globals.css';
@@ -42,9 +42,9 @@ export default function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <I18nProvider locale={locale} messages={messages}>
           {children}
-        </NextIntlClientProvider>
+        </I18nProvider>
       </body>
     </html>
   );
