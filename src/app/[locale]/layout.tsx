@@ -7,7 +7,14 @@ import '../globals.css';
 export const metadata: Metadata = {
   title: 'BOCalc - Car Shipping Calculator',
   description: 'Calculate the cost of shipping a car from USA',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
+
+// Force dynamic rendering for all pages
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
