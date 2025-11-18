@@ -18,32 +18,42 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment variables
+# Local env files
 .env
-.env*.local
-.dev.vars
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Vercel
 .vercel
 
-# Wrangler
-.wrangler/
-wrangler.toml.backup
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
 # OS
 .DS_Store
-*.pem
+Thumbs.db
 
-# Debug
-*.tsbuildinfo
-
-# IDEs
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
+# Wrangler
+.wrangler/
+wrangler.toml.backup
+
 # Temporary files
-tmp/
-temp/
+*.tmp
+.tmp/
+deploy-temp/
+
+# Screenshots
+*.png
+*.jpg
+*.jpeg
+*.gif
