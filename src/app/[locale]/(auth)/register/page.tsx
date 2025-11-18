@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from '@/lib/i18n-provider';
+import { useTranslations, useLocale } from '@/lib/i18n-provider';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/useToast';
 export default function RegisterPage() {
   const t = useTranslations();
   const router = useRouter();
+  const locale = useLocale();
   const { register, isLoading, error: authError } = useAuth();
   const { toast } = useToast();
 
@@ -50,7 +51,7 @@ export default function RegisterPage() {
         title: t('auth.registerSuccess'),
         description: t('common.welcome'),
       });
-      router.push('/dashboard');
+      router.push(`/${locale}/dashboard`);
     } else {
       toast({
         variant: 'destructive',
