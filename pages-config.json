@@ -1,7 +1,0 @@
-{
-  "framework": "next",
-  "buildCommand": "npm run build",
-  "buildOutputDirectory": ".next",
-  "nodeVersion": "18"
-}
-
