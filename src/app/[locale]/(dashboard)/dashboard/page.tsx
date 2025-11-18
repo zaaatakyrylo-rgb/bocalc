@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from '@/lib/i18n-provider';
+import { useTranslations, useLocale } from '@/lib/i18n-provider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 export default function DashboardPage() {
   const t = useTranslations();
+  const locale = useLocale();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 px-4 py-10">
@@ -53,10 +54,10 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <Button asChild>
-              <Link href="/calculator">{t('nav.calculator')}</Link>
+              <Link href={`/${locale}/calculator`}>{t('nav.calculator')}</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/vendors"> {t('nav.vendors')}</Link>
+              <Link href={`/${locale}/vendors`}> {t('nav.vendors')}</Link>
             </Button>
           </CardContent>
         </Card>

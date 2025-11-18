@@ -5,17 +5,25 @@ import { STORAGE_KEYS } from './constants';
  * API Client for making requests to Cloudflare Workers backend
  */
 class ApiClient {
-  private baseUrl: string;
+  constructor() {}
 
-  constructor() {
-    // Check if we're in browser and on localhost
-    const isLocalhost = typeof window !== 'undefined' && 
-                       (window.location.hostname === 'localhost' || 
-                        window.location.hostname === '127.0.0.1');
-    
-    this.baseUrl = isLocalhost
-      ? 'http://localhost:8787'
-      : 'https://bocalc-api.zaaatakyrylo.workers.dev';
+  /**
+   * Resolve API base URL based on runtime environment
+   */
+  private resolveBaseUrl(): string {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+      return isLocalhost
+        ? 'http://localhost:8787'
+        : 'https://bocalc-api.zaaatakyrylo.workers.dev';
+    }
+
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return process.env.NEXT_PUBLIC_API_URL;
+    }
+
+    return 'https://bocalc-api.zaaatakyrylo.workers.dev';
   }
 
   /**
@@ -49,7 +57,7 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    const url = `${this.baseUrl}${endpoint}`;
+    const url = `${this.resolveBaseUrl()}${endpoint}`;
     const headers = this.getHeaders();
 
     try {
@@ -294,6 +302,33 @@ class ApiClient {
     states: () => this.get('/api/reference/states'),
 
     bodyTypes: () => this.get('/api/reference/body-types'),
+  };
+
+  // ========================================================================
+  // Legislative Data API
+  // ========================================================================
+
+  law = {
+    variableTypes: {
+      list: () => this.get('/api/law-variable-types'),
+      create: (data: any) => this.post('/api/law-variable-types', data),
+      update: (id: string, data: any) =>
+        this.patch(`/api/law-variable-types/${id}`, data),
+      delete: (id: string) => this.delete(`/api/law-variable-types/${id}`),
+    },
+    rates: {
+      list: () => this.get('/api/law-rates'),
+      create: (data: any) => this.post('/api/law-rates', data),
+      update: (id: string, data: any) => this.patch(`/api/law-rates/${id}`, data),
+      delete: (id: string) => this.delete(`/api/law-rates/${id}`),
+    },
+    exchangeRates: {
+      list: () => this.get('/api/exchange-rates'),
+      create: (data: any) => this.post('/api/exchange-rates', data),
+      update: (id: string, data: any) =>
+        this.patch(`/api/exchange-rates/${id}`, data),
+      delete: (id: string) => this.delete(`/api/exchange-rates/${id}`),
+    },
   };
 }
 

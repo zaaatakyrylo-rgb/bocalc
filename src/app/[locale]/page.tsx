@@ -1,12 +1,13 @@
 'use client';
 
-import { useTranslations } from '@/lib/i18n-provider';
+import { useTranslations, useLocale } from '@/lib/i18n-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 
 export default function HomePage() {
   const t = useTranslations();
+  const locale = useLocale();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
@@ -21,10 +22,10 @@ export default function HomePage() {
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Button size="lg" asChild>
-              <Link href="/calculator">{t('calculator.title')}</Link>
+              <Link href={`/${locale}/calculator`}>{t('calculator.title')}</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/login">{t('nav.login')}</Link>
+              <Link href={`/${locale}/login`}>{t('nav.login')}</Link>
             </Button>
           </div>
         </div>
@@ -126,10 +127,10 @@ export default function HomePage() {
           </p>
           <div className="mt-8 flex items-center justify-center gap-x-6">
             <Button size="lg" asChild>
-              <Link href="/calculator">{t('calculator.calculate')}</Link>
+              <Link href={`/${locale}/calculator`}>{t('calculator.calculate')}</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/register">{t('auth.register')}</Link>
+              <Link href={`/${locale}/register`}>{t('auth.register')}</Link>
             </Button>
           </div>
         </div>

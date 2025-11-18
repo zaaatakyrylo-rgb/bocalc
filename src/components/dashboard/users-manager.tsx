@@ -305,14 +305,16 @@ export function UsersManager() {
               <div className="space-y-2">
                 <Label>{t('users.userVendor')}</Label>
                 <Select
-                  value={form.vendorId}
-                  onValueChange={(value) => setForm({ ...form, vendorId: value })}
+                  value={form.vendorId || 'none'}
+                  onValueChange={(value) =>
+                    setForm({ ...form, vendorId: value === 'none' ? '' : value })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Optional" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">—</SelectItem>
+                    <SelectItem value="none">—</SelectItem>
                     {vendorOptions.map((vendor) => (
                       <SelectItem key={vendor.id} value={vendor.id}>
                         {vendor.name}

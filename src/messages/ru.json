@@ -38,7 +38,8 @@
     "audit": "Журнал действий",
     "settings": "Настройки",
     "logout": "Выйти",
-    "login": "Войти"
+    "login": "Войти",
+    "backToLogin": "Вернуться к входу"
   },
   "auth": {
     "login": "Вход",
@@ -59,7 +60,10 @@
     "registerSuccess": "Регистрация выполнена успешно",
     "invalidCredentials": "Неверный email или пароль",
     "passwordResetSent": "Ссылка для сброса пароля отправлена на ваш email",
-    "passwordResetSuccess": "Пароль успешно сброшен"
+    "passwordResetSuccess": "Пароль успешно сброшен",
+    "resetInstructions": "Пока автоматический сброс в разработке, пишите в поддержку.",
+    "resetComingSoon": "Автоматический сброс пароля появится скоро.",
+    "resetContactSupport": "Нужен доступ срочно? Напишите на"
   },
   "calculator": {
     "title": "Калькулятор доставки авто",

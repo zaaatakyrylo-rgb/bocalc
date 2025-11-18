@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from '@/lib/i18n-provider';
+import { useTranslations, useLocale } from '@/lib/i18n-provider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ interface VendorDetailsPageProps {
 
 export function VendorDetailsPage({ vendorId }: VendorDetailsPageProps) {
   const t = useTranslations('vendors');
+  const locale = useLocale();
   const { toast } = useToast();
   const router = useRouter();
   
@@ -61,7 +62,7 @@ export function VendorDetailsPage({ vendorId }: VendorDetailsPageProps) {
           title: t('error'),
           description: t('vendorNotFound'),
         });
-        router.push('/vendors');
+        router.push(`/${locale}/vendors`);
       }
     } catch (error) {
       console.error('Failed to load vendor:', error);
@@ -141,7 +142,11 @@ export function VendorDetailsPage({ vendorId }: VendorDetailsPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => router.push('/vendors')}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push(`/${locale}/vendors`)}
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           {t('backToList')}
         </Button>

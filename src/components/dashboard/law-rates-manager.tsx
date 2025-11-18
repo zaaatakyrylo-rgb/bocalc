@@ -72,7 +72,7 @@ export function LawRatesManager() {
   const [rateForm, setRateForm] = useState({
     variableTypeId: '',
     rateName: '',
-    fuelType: '',
+    fuelType: 'any',
     volumeMin: '',
     volumeMax: '',
     ageMin: '',
@@ -110,31 +110,40 @@ export function LawRatesManager() {
   const loadData = async () => {
     setIsLoading(true);
     try {
-      // Load variable types
-      const typesResponse = await fetch('/api/law-variable-types');
-      if (typesResponse.ok) {
-        const typesData = await typesResponse.json();
-        if (typesData.success) {
-          setVariableTypes(typesData.data);
-        }
+      const [typesResponse, ratesResponse, exchangeResponse] = await Promise.all([
+        apiClient.law.variableTypes.list(),
+        apiClient.law.rates.list(),
+        apiClient.law.exchangeRates.list(),
+      ]);
+
+      if (typesResponse.success && typesResponse.data) {
+        setVariableTypes(typesResponse.data as LawVariableType[]);
+      } else if (typesResponse.error) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: typesResponse.error.message,
+        });
       }
 
-      // Load law rates
-      const ratesResponse = await fetch('/api/law-rates');
-      if (ratesResponse.ok) {
-        const ratesData = await ratesResponse.json();
-        if (ratesData.success) {
-          setLawRates(ratesData.data);
-        }
+      if (ratesResponse.success && ratesResponse.data) {
+        setLawRates(ratesResponse.data as LawRate[]);
+      } else if (ratesResponse.error) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: ratesResponse.error.message,
+        });
       }
 
-      // Load exchange rates
-      const exchangeResponse = await fetch('/api/exchange-rates');
-      if (exchangeResponse.ok) {
-        const exchangeData = await exchangeResponse.json();
-        if (exchangeData.success) {
-          setExchangeRates(exchangeData.data);
-        }
+      if (exchangeResponse.success && exchangeResponse.data) {
+        setExchangeRates(exchangeResponse.data as ExchangeRate[]);
+      } else if (exchangeResponse.error) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: exchangeResponse.error.message,
+        });
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -162,7 +171,10 @@ export function LawRatesManager() {
       const payload = {
         variableTypeId: rateForm.variableTypeId,
         rateName: rateForm.rateName,
-        fuelType: rateForm.fuelType || null,
+        fuelType:
+          !rateForm.fuelType || rateForm.fuelType === 'any'
+            ? null
+            : rateForm.fuelType,
         volumeMin: rateForm.volumeMin ? parseInt(rateForm.volumeMin) : null,
         volumeMax: rateForm.volumeMax ? parseInt(rateForm.volumeMax) : null,
         ageMin: rateForm.ageMin ? parseInt(rateForm.ageMin) : null,
@@ -174,18 +186,11 @@ export function LawRatesManager() {
         effectiveFrom: new Date(rateForm.effectiveFrom).toISOString(),
       };
 
-      const response = await fetch(
-        editingId ? `/api/law-rates/${editingId}` : '/api/law-rates',
-        {
-          method: editingId ? 'PATCH' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = editingId
+        ? await apiClient.law.rates.update(editingId, payload)
+        : await apiClient.law.rates.create(payload);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.success) {
         toast({
           title: editingId ? 'Rate Updated' : 'Rate Created',
           description: 'Legislative rate has been saved successfully',
@@ -194,7 +199,7 @@ export function LawRatesManager() {
         setRateForm({
           variableTypeId: '',
           rateName: '',
-          fuelType: '',
+          fuelType: 'any',
           volumeMin: '',
           volumeMax: '',
           ageMin: '',
@@ -210,7 +215,7 @@ export function LawRatesManager() {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: data.error?.message || 'Failed to save rate',
+          description: response.error?.message || 'Failed to save rate',
         });
       }
     } catch (error) {
@@ -243,15 +248,9 @@ export function LawRatesManager() {
         source: exchangeForm.source || null,
       };
 
-      const response = await fetch('/api/exchange-rates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const response = await apiClient.law.exchangeRates.create(payload);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.success) {
         toast({
           title: 'Exchange Rate Added',
           description: 'Exchange rate has been saved successfully',
@@ -268,7 +267,7 @@ export function LawRatesManager() {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: data.error?.message || 'Failed to save exchange rate',
+          description: response.error?.message || 'Failed to save exchange rate',
         });
       }
     } catch (error) {
@@ -285,13 +284,9 @@ export function LawRatesManager() {
     if (!confirm('Deactivate this rate?')) return;
 
     try {
-      const response = await fetch(`/api/law-rates/${id}`, {
-        method: 'DELETE',
-      });
+      const response = await apiClient.law.rates.delete(id);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.success) {
         toast({
           title: 'Rate Deactivated',
           description: 'Rate has been deactivated successfully',
@@ -301,7 +296,7 @@ export function LawRatesManager() {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: data.error?.message || 'Failed to deactivate rate',
+          description: response.error?.message || 'Failed to deactivate rate',
         });
       }
     } catch (error) {
@@ -467,7 +462,7 @@ export function LawRatesManager() {
                           <div className="space-y-2">
                             <Label>Fuel Type</Label>
                             <Select
-                              value={rateForm.fuelType}
+                              value={rateForm.fuelType || 'any'}
                               onValueChange={(value) =>
                                 setRateForm({ ...rateForm, fuelType: value })
                               }
@@ -476,7 +471,7 @@ export function LawRatesManager() {
                                 <SelectValue placeholder="Optional" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="">Not specified</SelectItem>
+                                <SelectItem value="any">Not specified</SelectItem>
                                 <SelectItem value="gasoline">Gasoline</SelectItem>
                                 <SelectItem value="diesel">Diesel</SelectItem>
                                 <SelectItem value="hybrid">Hybrid</SelectItem>

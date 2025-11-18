@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from '@/lib/i18n-provider';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -72,7 +72,7 @@ export default function LoginPage() {
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">{t('auth.password')}</Label>
                 <Link
-                  href="/forgot-password"
+                  href={`/${locale}/forgot-password`}
                   className="text-sm text-primary hover:underline"
                 >
                   {t('auth.forgotPassword')}
@@ -107,7 +107,10 @@ export default function LoginPage() {
             </Button>
             <div className="text-sm text-center text-muted-foreground">
               {t('auth.noAccount')}{' '}
-              <Link href="/register" className="text-primary hover:underline font-medium">
+              <Link
+                href={`/${locale}/register`}
+                className="text-primary hover:underline font-medium"
+              >
                 {t('auth.registerButton')}
               </Link>
             </div>

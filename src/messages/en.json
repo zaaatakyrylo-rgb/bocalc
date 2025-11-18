@@ -38,7 +38,8 @@
     "audit": "Audit Log",
     "settings": "Settings",
     "logout": "Logout",
-    "login": "Login"
+    "login": "Login",
+    "backToLogin": "Back to login"
   },
   "auth": {
     "login": "Login",
@@ -59,7 +60,10 @@
     "registerSuccess": "Successfully registered",
     "invalidCredentials": "Invalid email or password",
     "passwordResetSent": "Password reset link sent to your email",
-    "passwordResetSuccess": "Password reset successfully"
+    "passwordResetSuccess": "Password reset successfully",
+    "resetInstructions": "Reset your password via support while automation is finishing.",
+    "resetComingSoon": "Automatic password reset is coming soon.",
+    "resetContactSupport": "Need urgent access? Email"
   },
   "calculator": {
     "title": "Car Shipping Calculator",

@@ -130,7 +130,10 @@ export default function RegisterPage() {
             </Button>
             <div className="text-sm text-center text-muted-foreground">
               {t('auth.haveAccount')}{' '}
-              <Link href="/login" className="text-primary hover:underline font-medium">
+              <Link
+                href={`/${locale}/login`}
+                className="text-primary hover:underline font-medium"
+              >
                 {t('auth.loginButton')}
               </Link>
             </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useTranslations } from '@/lib/i18n-provider';
+import { useTranslations, useLocale } from '@/lib/i18n-provider';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,32 +10,32 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Menu, User, LogOut, Settings } from 'lucide-react';
 
 export function Header() {
   const t = useTranslations();
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
+  const locale = useLocale();
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
+    router.push(`/${locale}/login`);
   };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href={`/${locale}`} className="flex items-center space-x-2">
           <span className="text-2xl font-bold text-primary">BOCalc</span>
         </Link>
 
         {/* Navigation */}
         <nav className="hidden items-center space-x-6 md:flex">
           <Link
-            href="/calculator"
+            href={`/${locale}/calculator`}
             className="text-sm font-medium transition-colors hover:text-primary"
           >
             {t('nav.calculator')}
@@ -44,7 +44,7 @@ export function Header() {
           {isAuthenticated && (
             <>
               <Link
-                href="/dashboard"
+                href={`/${locale}/dashboard`}
                 className="text-sm font-medium transition-colors hover:text-primary"
               >
                 {t('nav.dashboard')}
@@ -53,19 +53,19 @@ export function Header() {
               {user?.role === 'admin' && (
                 <>
                   <Link
-                    href="/vendors"
+                    href={`/${locale}/vendors`}
                     className="text-sm font-medium transition-colors hover:text-primary"
                   >
                     {t('nav.vendors')}
                   </Link>
                   <Link
-                    href="/users"
+                    href={`/${locale}/users`}
                     className="text-sm font-medium transition-colors hover:text-primary"
                   >
                     {t('nav.users')}
                   </Link>
                   <Link
-                    href="/audit"
+                    href={`/${locale}/audit`}
                     className="text-sm font-medium transition-colors hover:text-primary"
                   >
                     {t('nav.audit')}
@@ -91,7 +91,7 @@ export function Header() {
                   <p className="text-xs text-muted-foreground">{user?.role}</p>
                 </div>
                 <DropdownMenuItem asChild>
-                  <Link href="/settings">
+                  <Link href={`/${locale}/settings`}>
                     <Settings className="mr-2 h-4 w-4" />
                     {t('nav.settings')}
                   </Link>
@@ -105,10 +105,10 @@ export function Header() {
           ) : (
             <>
               <Button variant="ghost" asChild>
-                <Link href="/login">{t('nav.login')}</Link>
+                <Link href={`/${locale}/login`}>{t('nav.login')}</Link>
               </Button>
               <Button asChild>
-                <Link href="/register">{t('auth.register')}</Link>
+                <Link href={`/${locale}/register`}>{t('auth.register')}</Link>
               </Button>
             </>
           )}
@@ -122,23 +122,23 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem asChild>
-                <Link href="/calculator">{t('nav.calculator')}</Link>
+                <Link href={`/${locale}/calculator`}>{t('nav.calculator')}</Link>
               </DropdownMenuItem>
               {isAuthenticated && (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">{t('nav.dashboard')}</Link>
+                    <Link href={`/${locale}/dashboard`}>{t('nav.dashboard')}</Link>
                   </DropdownMenuItem>
                   {user?.role === 'admin' && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/vendors">{t('nav.vendors')}</Link>
+                        <Link href={`/${locale}/vendors`}>{t('nav.vendors')}</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/users">{t('nav.users')}</Link>
+                        <Link href={`/${locale}/users`}>{t('nav.users')}</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/audit">{t('nav.audit')}</Link>
+                        <Link href={`/${locale}/audit`}>{t('nav.audit')}</Link>
                       </DropdownMenuItem>
                     </>
                   )}
