@@ -18,6 +18,12 @@ import {
   vendorPortsRouter,
   vendorModifiersRouter,
 } from './handlers/vendor-pricing';
+import {
+  lawVariableTypesRouter,
+  lawRatesRouter,
+  exchangeRatesRouter,
+} from './handlers/law-variables';
+import { calculatorDataRouter } from './handlers/calculator-data';
 import { rateLimitMiddleware } from './middleware/rate-limit';
 import { errorHandler } from './middleware/error-handler';
 
@@ -88,6 +94,10 @@ app.route('/api/vendors', vendorsRouter);
 app.route('/api/vendor-rates', vendorRatesRouter);
 app.route('/api/vendor-ports', vendorPortsRouter);
 app.route('/api/vendor-modifiers', vendorModifiersRouter);
+app.route('/api/law-variable-types', lawVariableTypesRouter);
+app.route('/api/law-rates', lawRatesRouter);
+app.route('/api/exchange-rates', exchangeRatesRouter);
+app.route('/api/calculator', calculatorDataRouter);
 app.route('/api/calculate', calculatorRouter);
 app.route('/api/sheets', sheetsRouter);
 app.route('/api/audit', auditRouter);

@@ -13,6 +13,7 @@ account_id = "0afce6d1f5be6971a0d1f10f0441fe31"
 binding = "DB"
 database_name = "bocalc-db"
 database_id = "133dc7d2-b6a1-414c-9902-7077fb763753"
+migrations_dir = "../database/migrations"
 
 # KV Namespace (production)
 [[kv_namespaces]]

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOCalc - Vendor Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-xl font-bold text-indigo-600">BOCalc</h1>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="/dashboard.html" class="text-sm text-gray-700 hover:text-gray-900 mr-4">← Back to Dashboard</a>
+                    <button onclick="logout()" class="text-sm text-gray-700 hover:text-gray-900">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <div id="loading" class="flex items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+
+            <div id="content" class="hidden">
+                <!-- Vendor Header -->
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 id="vendor-name" class="text-2xl leading-6 font-bold text-gray-900"></h3>
+                        <p id="vendor-email" class="mt-1 max-w-2xl text-sm text-gray-500"></p>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Contact Email</dt>
+                                <dd id="contact-email" class="mt-1 text-sm text-gray-900"></dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Contact Phone</dt>
+                                <dd id="contact-phone" class="mt-1 text-sm text-gray-900"></dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Status</dt>
+                                <dd id="vendor-status" class="mt-1 text-sm text-gray-900"></dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Default Currency</dt>
+                                <dd id="default-currency" class="mt-1 text-sm text-gray-900"></dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="bg-white shadow sm:rounded-lg">
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                            <button onclick="showTab('rates')" id="tab-rates" class="tab-button border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                                Rates
+                            </button>
+                            <button onclick="showTab('ports')" id="tab-ports" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                                Ports
+                            </button>
+                            <button onclick="showTab('modifiers')" id="tab-modifiers" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                                Modifiers
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Rates Tab -->
+                    <div id="content-rates" class="tab-content p-6">
+                        <h4 class="text-lg font-medium text-gray-900 mb-4">Vendor Rates</h4>
+                        <div id="rates-list" class="text-gray-500">Loading...</div>
+                    </div>
+
+                    <!-- Ports Tab -->
+                    <div id="content-ports" class="tab-content hidden p-6">
+                        <h4 class="text-lg font-medium text-gray-900 mb-4">Vendor Ports</h4>
+                        <div id="ports-list" class="text-gray-500">Loading...</div>
+                    </div>
+
+                    <!-- Modifiers Tab -->
+                    <div id="content-modifiers" class="tab-content hidden p-6">
+                        <h4 class="text-lg font-medium text-gray-900 mb-4">Vendor Modifiers</h4>
+                        <div id="modifiers-list" class="text-gray-500">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error" class="hidden text-center py-12">
+                <p class="text-red-600 text-lg">Failed to load vendor details</p>
+                <a href="/dashboard.html" class="mt-4 inline-block text-indigo-600 hover:text-indigo-500">← Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://bocalc-api.zaaatakyrylo.workers.dev';
+        const token = localStorage.getItem('auth-token');
+        
+        if (!token) {
+            window.location.href = '/';
+        }
+
+        // Get vendor ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const vendorId = urlParams.get('id');
+
+        if (!vendorId) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+        }
+
+        async function apiRequest(endpoint) {
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            
+            if (response.status === 401) {
+                localStorage.removeItem('auth-token');
+                window.location.href = '/';
+                return null;
+            }
+            
+            return response.json();
+        }
+
+        async function loadVendorDetails() {
+            try {
+                // Load vendor info
+                const vendorData = await apiRequest(`/api/vendors/${vendorId}`);
+                if (!vendorData || !vendorData.success) {
+                    throw new Error('Failed to load vendor');
+                }
+
+                const vendor = vendorData.data;
+                document.getElementById('vendor-name').textContent = vendor.name;
+                document.getElementById('vendor-email').textContent = vendor.slug;
+                document.getElementById('contact-email').textContent = vendor.contactEmail;
+                document.getElementById('contact-phone').textContent = vendor.contactPhone || 'N/A';
+                document.getElementById('vendor-status').innerHTML = vendor.active 
+                    ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>'
+                    : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>';
+                document.getElementById('default-currency').textContent = vendor.settings?.defaultCurrency || 'USD';
+
+                // Load rates, ports, modifiers
+                await Promise.all([
+                    loadRates(),
+                    loadPorts(),
+                    loadModifiers()
+                ]);
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading vendor details:', error);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('error').classList.remove('hidden');
+            }
+        }
+
+        async function loadRates() {
+            try {
+                const data = await apiRequest(`/api/vendor-rates?vendorId=${vendorId}`);
+                const container = document.getElementById('rates-list');
+                
+                if (!data || !data.success || data.data.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">No rates found</p>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Base Value</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Currency</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${data.data.map(rate => `
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${rate.name}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${rate.rateType}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">${rate.description || '-'}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${rate.baseValue}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${rate.currency}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${rate.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                ${rate.active ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading rates:', error);
+                document.getElementById('rates-list').innerHTML = '<p class="text-red-500">Failed to load rates</p>';
+            }
+        }
+
+        async function loadPorts() {
+            try {
+                const data = await apiRequest(`/api/vendor-ports?vendorId=${vendorId}`);
+                const container = document.getElementById('ports-list');
+                
+                if (!data || !data.success || data.data.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">No ports found</p>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Country</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">City</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Base Ocean Shipping</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Inland Shipping</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Transit Days</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${data.data.map(port => `
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${port.name}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${port.country}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${port.city}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$${port.baseOceanShipping} ${port.currency || 'USD'}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$${port.inlandShipping} ${port.currency || 'USD'}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${port.transitTimeDays || '-'} days</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${port.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                ${port.active ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading ports:', error);
+                document.getElementById('ports-list').innerHTML = '<p class="text-red-500">Failed to load ports</p>';
+            }
+        }
+
+        async function loadModifiers() {
+            try {
+                const data = await apiRequest(`/api/vendor-modifiers?vendorId=${vendorId}`);
+                const container = document.getElementById('modifiers-list');
+                
+                if (!data || !data.success || data.data.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">No modifiers found</p>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Target</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ocean Modifier</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">USA Modifier</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${data.data.map(mod => `
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${mod.modifierType}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${mod.target}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${mod.oceanModifier > 0 ? '+' : ''}$${mod.oceanModifier}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${mod.usaModifier > 0 ? '+' : ''}$${mod.usaModifier}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">${mod.notes || '-'}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${mod.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                ${mod.active ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading modifiers:', error);
+                document.getElementById('modifiers-list').innerHTML = '<p class="text-red-500">Failed to load modifiers</p>';
+            }
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active state from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'text-indigo-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Show selected tab
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            
+            // Add active state to selected button
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.add('border-indigo-500', 'text-indigo-600');
+            activeBtn.classList.remove('border-transparent', 'text-gray-500');
+        }
+
+        function logout() {
+            localStorage.removeItem('auth-token');
+            window.location.href = '/';
+        }
+
+        // Load vendor details on page load
+        loadVendorDetails();
+    </script>
+</body>
+</html>
+
