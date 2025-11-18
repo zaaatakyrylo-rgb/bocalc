@@ -1,12 +1,14 @@
 import { Suspense } from 'react';
-import { getTranslations } from 'next-intl/server';
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { VendorModifiersManager } from '@/components/dashboard/vendor-modifiers-manager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const revalidate = 0;
 
-export default async function VendorModifiersPage() {
-  const t = await getTranslations();
+export default function VendorModifiersPage() {
+  const t = useTranslations();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 px-4 py-10">

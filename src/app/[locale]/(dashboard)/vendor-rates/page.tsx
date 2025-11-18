@@ -1,12 +1,14 @@
 import { Suspense } from 'react';
-import { getTranslations } from 'next-intl/server';
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { VendorRatesManager } from '@/components/dashboard/vendor-rates-manager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const revalidate = 0;
 
-export default async function VendorRatesPage() {
-  const t = await getTranslations();
+export default function VendorRatesPage() {
+  const t = useTranslations();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 px-4 py-10">

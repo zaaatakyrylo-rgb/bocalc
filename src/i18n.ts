@@ -5,9 +5,12 @@ import { notFound } from 'next/navigation';
 export const locales = ['en', 'ru', 'uk'] as const;
 export type Locale = (typeof locales)[number];
 
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  // Get locale from URL parameter
+  let locale = await requestLocale;
+  
   // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as Locale)) {
+  if (!locale || !locales.includes(locale as Locale)) {
     notFound();
   }
 
