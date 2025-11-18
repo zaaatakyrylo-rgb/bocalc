@@ -323,7 +323,8 @@ export function VendorManager() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <>
+      <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -702,23 +703,24 @@ export function VendorManager() {
       </Card>
     </div>
 
-    <Dialog
-      open={Boolean(detailsVendorId)}
-      onOpenChange={(open) => {
-        if (!open) {
-          setDetailsVendorId(null);
-        }
-      }}
-    >
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-        {detailsVendorId && (
-          <VendorDetailsPage
-            vendorId={detailsVendorId}
-            onClose={() => setDetailsVendorId(null)}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+      <Dialog
+        open={Boolean(detailsVendorId)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDetailsVendorId(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          {detailsVendorId && (
+            <VendorDetailsPage
+              vendorId={detailsVendorId}
+              onClose={() => setDetailsVendorId(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
